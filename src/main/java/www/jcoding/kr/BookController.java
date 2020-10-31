@@ -19,7 +19,7 @@ public class BookController {
 		if(query == null || query.length() == 0) {
 			return new ArrayList<BookInfo>();
 		}
-		final String APP_KEY = "KakaoAK 66ba5d915c487bb9d13205a89df4c8da";
+		final String APP_KEY = "KakaoAK ";
 		StringBuilder sb = new StringBuilder();
 		sb.append("https://dapi.kakao.com");
 		sb.append("/v3/search/book");
@@ -42,8 +42,8 @@ public class BookController {
 				.build();
 		
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000); // 읽기 시간초과 5초
-		factory.setConnectTimeout(3000); // 연결 시간초과 3초
+		factory.setReadTimeout(5000); 		// 읽기 시간초과 5초
+		factory.setConnectTimeout(3000); 	// 연결 시간초과 3초
 		factory.setHttpClient(httpClient);
 		
 		RestTemplate restTemplate = new RestTemplate(factory);
