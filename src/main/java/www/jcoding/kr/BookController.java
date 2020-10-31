@@ -16,7 +16,10 @@ import org.springframework.web.client.RestTemplate;
 public class BookController {
 	
 	public List<BookInfo> getBookList(String query, String page, String sort, String size){
-		final String APP_KEY = "KakaoAK ";
+		if(query == null || query.length() == 0) {
+			return new ArrayList<BookInfo>();
+		}
+		final String APP_KEY = "KakaoAK 66ba5d915c487bb9d13205a89df4c8da";
 		StringBuilder sb = new StringBuilder();
 		sb.append("https://dapi.kakao.com");
 		sb.append("/v3/search/book");
