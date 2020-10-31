@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 public class NaverApi {
 	Logger logger = Logger.getLogger(NaverApi.class.getSimpleName());
 	
-	public String getMovieInfo(String query, int display, int start) {
+	public String getMovieInfo(String query, int display, int start, int genre) {
 		String result = new String();
 		
 		final String CLIENT_ID = "BNidahojeq2_rJKwP41X";
@@ -34,6 +34,9 @@ public class NaverApi {
 			sb.append(text);
 		}catch(UnsupportedEncodingException e) {
 			throw new RuntimeException("검색어 인코딩 실패");
+		}
+		if(genre > 0) {
+			sb.append("&genre=").append(genre);
 		}
 		Header jsonHeader = new BasicHeader("X-Naver-Client-Id", CLIENT_ID);
 		Header authHeader = new BasicHeader("X-Naver-Client-Secret", CLIENT_SECRET);
