@@ -2,19 +2,23 @@ package www.jcoding.kr;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 public class MovieController {
 	Logger logger = Logger.getLogger(MovieController.class.getSimpleName());
 	
-	public String getMovieInfo(String repNationCd, int when) {
+	public List<MovieInfo> getMovie(String repNationCd, int when) {
+		
 		final String KEY = "bb02836a778e48413215de69285f2126";
-		String result = new String();
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json");
@@ -36,10 +40,19 @@ public class MovieController {
 		
 		RestTemplate restTemplate = new RestTemplate(factory);
 		
-		logger.info(sb.toString());
+		String response = restTemplate.getForObject(sb.toString(), String.class);
+		System.out.println(response);
+		JSONObject json = new JSONObject(response);
+		JSONObject moviereslt = json.getJSONObject("boxOfficeResult");
+		JSONArray movieArray = moviereslt.getJSONArray("dailyBoxOfficeList");
 		
-		result = restTemplate.getForObject(sb.toString(), String.class);
-		logger.info(result);
+		List<MovieInfo> result = new ArrayList<MovieInfo>();
+		for(int i=0; i<movieArray.length();i++) {
+			JSONObject item = movieArray.getJSONObject(i);
+			MovieInfo info = MovieInfo.parse(item);
+			result.add(info);
+			
+		}
 		return result;
 	}
 	/**
