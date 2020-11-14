@@ -13,18 +13,19 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 public class NaverApi {
 	Logger logger = Logger.getLogger(NaverApi.class.getSimpleName());
-	
-	public String getMovieInfo(String query, int display, int start, int genre) {
-		String result = new String();
-		
-		final String CLIENT_ID = "BNidahojeq2_rJKwP41X";
-		final String CLIENT_SECRET = "gZ5_wDOEIB";
-		
+
+	public List<mvNvInfo> getMovieInfo(String query, int display, int start, int genre) {
+
+		final String CLIENT_ID = "r5Zdx1KJHROWEa50jowV";
+		final String CLIENT_SECRET = "Mz2qlTTZ4W";
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("https://openapi.naver.com/v1/search/movie.json");
 		sb.append("?query=");
@@ -43,24 +44,32 @@ public class NaverApi {
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(jsonHeader);
 		headers.add(authHeader);
-		
-        HttpClient httpClient = HttpClientBuilder.create()
+
+		HttpClient httpClient = HttpClientBuilder.create()
 				.setMaxConnTotal(100)
 				.setMaxConnPerRoute(5)
 				.setDefaultHeaders(headers)
 				.build();
-		
+
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setReadTimeout(5000); 		// 읽기 시간초과 5초
 		factory.setConnectTimeout(3000); 	// 연결 시간초과 3초
 		factory.setHttpClient(httpClient);
-		
+
 		RestTemplate restTemplate = new RestTemplate(factory);
-		
-		logger.info(sb.toString());
-		
+
 		String response = restTemplate.getForObject(sb.toString(), String.class);
-		logger.info(response);
+		System.out.println(response);
+		JSONObject json = new JSONObject(response);
+		JSONArray movieArray = json.getJSONArray("items");
+
+		List<mvNvInfo> result = new ArrayList<mvNvInfo>();
+		for(int i=0; i<movieArray.length();i++) {
+			JSONObject item = movieArray.getJSONObject(i);
+			mvNvInfo infoN = mvNvInfo.parse(item);
+			result.add(infoN);
+			
+		}
 		return result;
 	}
 }

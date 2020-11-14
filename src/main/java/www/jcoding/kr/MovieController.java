@@ -55,6 +55,7 @@ public class MovieController {
 		}
 		return result;
 	}
+	
 	/**
 	 * 
 	 * @param days : 0 -> today, -1 -> yesterday, -2 -> two days ago
